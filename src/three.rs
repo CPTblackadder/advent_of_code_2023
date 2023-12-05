@@ -1,11 +1,4 @@
-use core::num;
-use std::{
-    borrow::BorrowMut,
-    cell::Cell,
-    collections::HashSet,
-    ops::{Index, IndexMut},
-    rc::Rc,
-};
+use std::collections::HashSet;
 
 use crate::helpers::get_contents;
 
@@ -14,7 +7,11 @@ struct Grid {
     height: usize,
     width: usize,
     cells: Vec<GridCell>,
+    numbers: Vec<u32>,
 }
+
+#[derive(PartialEq, Eq, Debug, Hash, Clone, Copy, PartialOrd, Ord)]
+struct NumberID(usize);
 
 impl Grid {
     fn create(input: &str) -> Self {
@@ -22,36 +19,52 @@ impl Grid {
         let height = lines.len();
         let width = lines[0].len();
         let mut cells = Vec::with_capacity(height * width);
+        let mut numbers = Vec::new();
 
         for line in lines {
             assert_eq!(line.len(), width);
-            let mut number = Rc::new(Cell::new((0, false)));
+            let mut number = 0;
             for char in line.chars() {
                 cells.push(match char {
                     '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => {
-                        let n = number.borrow_mut().as_ptr();
                         // Stinky but I don't care
-                        unsafe {
-                            (*n).0 *= 10;
-                            (*n).0 += char.to_digit(10).unwrap()
-                        };
-                        GridCell::Number(number.clone())
+                        number *= 10;
+                        number += char.to_digit(10).unwrap();
+                        GridCell::Number(NumberID(numbers.len()))
+                    }
+                    '*' => {
+                        if number != 0 {
+                            numbers.push(number);
+                            number = 0;
+                        }
+                        GridCell::Gear
                     }
                     '.' => {
-                        number = Rc::new(Cell::new((0, false)));
+                        if number != 0 {
+                            numbers.push(number);
+                            number = 0;
+                        }
                         GridCell::Dot
                     }
                     _ => {
-                        number = Rc::new(Cell::new((0, false)));
+                        if number != 0 {
+                            numbers.push(number);
+                            number = 0;
+                        }
                         GridCell::Punctuation
                     }
                 })
+            }
+            if number != 0 {
+                numbers.push(number);
+                number = 0;
             }
         }
         Grid {
             width,
             height,
             cells,
+            numbers,
         }
     }
 
@@ -59,22 +72,34 @@ impl Grid {
         &self.cells[(height * self.width) + width]
     }
 
-    fn get_sum(&mut self) -> (u32, Vec<u32>) {
-        let mut numbers_used = Vec::new();
-        let mut sum = 0;
+    fn get_sum(&mut self) -> (u32, u32) {
+        let mut numbers = HashSet::new();
+        let mut gear_sum = 0;
         for height in 0..self.height {
             for width in 0..self.width {
                 match self.get_index(height, width) {
+                    GridCell::Gear => {
+                        let mut neighbours = Vec::new();
+                        self.get_neighbours(height, width).for_each(|x| {
+                            match x {
+                                GridCell::Number(n) => {
+                                    neighbours.push(*n);
+                                    numbers.insert(*n);
+                                }
+                                _ => (),
+                            };
+                        });
+                        neighbours.sort();
+                        neighbours.dedup();
+                        if neighbours.len() == 2 {
+                            gear_sum +=
+                                self.numbers[neighbours[0].0] * self.numbers[neighbours[1].0];
+                        }
+                    }
                     GridCell::Punctuation => self.get_neighbours(height, width).for_each(|x| {
                         match x {
                             GridCell::Number(n) => {
-                                if !n.get().1 {
-                                    numbers_used.push(n.get().0);
-                                    sum += n.get().0;
-                                    unsafe {
-                                        (*n.as_ptr()).1 = true;
-                                    }
-                                }
+                                numbers.insert(*n);
                             }
                             _ => (),
                         };
@@ -83,7 +108,10 @@ impl Grid {
                 };
             }
         }
-        (sum, numbers_used)
+        (
+            numbers.iter().map(|x| self.numbers[x.0]).sum::<u32>(),
+            gear_sum,
+        )
     }
 
     fn get_neighbours<'a>(&'a self, height: usize, width: usize) -> GridCellNeighbours<'a> {
@@ -100,7 +128,8 @@ impl Grid {
 enum GridCell {
     Dot,
     Punctuation,
-    Number(Rc<Cell<(u32, bool)>>),
+    Gear,
+    Number(NumberID),
 }
 
 struct GridCellNeighbours<'a> {
@@ -149,11 +178,11 @@ impl<'a> Iterator for GridCellNeighbours<'a> {
     }
 }
 
-pub fn run_task_1() -> Vec<u32> {
+pub fn run_task() {
     let mut grid = Grid::create(&get_contents("three".to_owned()));
 
-    let (sum, numbers_used) = grid.get_sum();
+    let (sum, gear_sum) = grid.get_sum();
 
-    println!("{}", sum);
-    numbers_used
+    println!("Total number: {}", sum);
+    println!("Gear sum: {}", gear_sum);
 }

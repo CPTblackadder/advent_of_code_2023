@@ -1,11 +1,9 @@
-use core::num;
-use std::collections::HashSet;
-
+mod four;
 pub mod helpers;
 mod one;
 mod three;
 mod two;
 
 fn main() {
-    three::run_task_1();
+    four::run_task();
 }
