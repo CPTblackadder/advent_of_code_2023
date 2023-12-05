@@ -146,6 +146,5 @@ pub fn run_task() {
         .map(|x| humidity_to_location.map_range(x))
         .flatten()
         .fold(u64::MAX, |x, y| if y.start < x { y.start } else { x });
-
-    println!("{:?}", best_seed)
+    println!("{:?}", best_seed);
 }
