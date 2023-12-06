@@ -4,15 +4,16 @@ mod five;
 mod four;
 pub mod helpers;
 mod one;
+mod six;
 mod three;
 mod two;
 
 fn main() {
     let mut durations = vec![];
-    let number_of_runs: i32 = 100;
-    for _ in 0..10 {
+    let number_of_runs: i32 = 1;
+    for _ in 0..number_of_runs {
         let start: Instant = Instant::now();
-        five::run_task();
+        six::run_task_2();
         let duration = start.elapsed();
         durations.push(duration);
     }
