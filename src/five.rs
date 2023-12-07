@@ -79,7 +79,7 @@ impl RangeMap {
     }
 }
 
-pub fn get_contents() -> (
+fn get_contents() -> (
     Vec<u64>,
     Vec<Range<u64>>,
     RangeMap,
@@ -156,7 +156,8 @@ impl TaskCompleter for Task5 {
             humidity_to_location,
         ) = get_contents();
 
-        seeds.into_iter()
+        seeds
+            .into_iter()
             .map(|x| seed_to_soil.get_value(x))
             .map(|x| soil_to_fertilizer.get_value(x))
             .map(|x| fertilizer_to_water.get_value(x))

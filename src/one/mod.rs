@@ -81,6 +81,6 @@ impl TaskCompleter for Task1 {
     }
 
     fn get_name(&self) -> String {
-        "One".to_owned()
+        "1".to_owned()
     }
 }
