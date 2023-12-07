@@ -3,7 +3,7 @@ use std::{
     ops::{Mul, Sub},
 };
 
-use crate::helpers::get_contents;
+use crate::TaskCompleter;
 
 fn get_distance_for_given_charge<T>(total_time: T, charging_time: T) -> T
 where
@@ -15,50 +15,56 @@ where
     distance
 }
 
-pub fn run_task_1() {
-    let contents = get_contents("six".to_owned());
-    let mut lines = contents.lines();
-    let times: &Vec<i32> = &lines.next().unwrap()[12..]
-        .split("   ")
-        .map(|x| x.trim().parse::<i32>().unwrap())
-        .collect();
-    let distances: &Vec<i32> = &lines.next().unwrap()[12..]
-        .split("   ")
-        .map(|x| x.trim().parse::<i32>().unwrap())
-        .collect();
+pub struct Task6;
 
-    let result = zip(times, distances)
-        .map(|(time, record_distance)| {
-            (0..*time)
-                .map(|charging_time| get_distance_for_given_charge(*time, charging_time))
-                .filter(|distance| distance > record_distance)
-                .count()
-        })
-        .fold(1, |x, y| x * y);
+impl TaskCompleter for Task6 {
+    fn get_name(&self) -> String {
+        "6".to_owned()
+    }
 
-    println!("Result is: {}", result);
-}
+    fn do_task_1(&self) -> String {
+        let contents = include_str!("../input/six/input");
+        let mut lines = contents.lines();
+        let times: &Vec<i32> = &lines.next().unwrap()[12..]
+            .split("   ")
+            .map(|x| x.trim().parse::<i32>().unwrap())
+            .collect();
+        let distances: &Vec<i32> = &lines.next().unwrap()[12..]
+            .split("   ")
+            .map(|x| x.trim().parse::<i32>().unwrap())
+            .collect();
 
-pub fn run_task_2() {
-    let contents = get_contents("six".to_owned());
-    let mut lines = contents.lines();
-    let time = &lines.next().unwrap()[12..]
-        .split("   ")
-        .map(|x| x.trim())
-        .fold(String::new(), |x, y| x + y)
-        .parse::<u64>()
-        .unwrap();
-    let record_distance = &lines.next().unwrap()[12..]
-        .split("   ")
-        .map(|x| x.trim())
-        .fold(String::new(), |x, y| x + y)
-        .parse::<u64>()
-        .unwrap();
+        zip(times, distances)
+            .map(|(time, record_distance)| {
+                (0..*time)
+                    .map(|charging_time| get_distance_for_given_charge(*time, charging_time))
+                    .filter(|distance| distance > record_distance)
+                    .count()
+            })
+            .fold(1, |x, y| x * y)
+            .to_string()
+    }
 
-    let result = (0..*time)
-        .map(|charging_time| get_distance_for_given_charge(*time, charging_time))
-        .filter(|distance| distance > record_distance)
-        .count();
+    fn do_task_2(&self) -> String {
+        let contents = include_str!("../input/six/input");
+        let mut lines = contents.lines();
+        let time = &lines.next().unwrap()[12..]
+            .split("   ")
+            .map(|x| x.trim())
+            .fold(String::new(), |x, y| x + y)
+            .parse::<u64>()
+            .unwrap();
+        let record_distance = &lines.next().unwrap()[12..]
+            .split("   ")
+            .map(|x| x.trim())
+            .fold(String::new(), |x, y| x + y)
+            .parse::<u64>()
+            .unwrap();
 
-    println!("Result is: {}", result);
+        (0..*time)
+            .map(|charging_time| get_distance_for_given_charge(*time, charging_time))
+            .filter(|distance| distance > record_distance)
+            .count()
+            .to_string()
+    }
 }

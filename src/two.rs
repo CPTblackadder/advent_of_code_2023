@@ -1,7 +1,7 @@
 use core::panic;
 use std::collections::HashMap;
 
-use crate::helpers::get_contents;
+use crate::TaskCompleter;
 
 struct Game {
     id: u32,
@@ -37,7 +37,7 @@ impl Game {
         }
 
         Self {
-            id: dbg!(id),
+            id: id,
             highest_value: highest_value,
         }
     }
@@ -98,40 +98,48 @@ enum Colour {
     Blue,
 }
 
-pub fn run_task_1() {
-    let contents: Vec<u32> = get_contents("two".to_string())
-        .split("\n")
-        .filter_map(|x| {
-            if x.is_empty() {
-                None
-            } else {
-                Some(Game::create(x))
-            }
-        })
-        .filter(|x| {
-            &x.highest_value
-                <= &MaxValueMap {
-                    red: 12,
-                    green: 13,
-                    blue: 14,
-                }
-        })
-        .map(|x| x.id)
-        .collect();
-    println!("Sum: {}", contents.iter().sum::<u32>());
-}
+pub struct Task2;
 
-pub fn run_task_2() {
-    let contents: Vec<u32> = get_contents("two".to_string())
-        .split("\n")
-        .filter_map(|x| {
-            if x.is_empty() {
-                None
-            } else {
-                Some(Game::create(x))
-            }
-        })
-        .map(|x| x.highest_value.get_power())
-        .collect();
-    println!("Sum: {}", contents.iter().sum::<u32>());
+impl TaskCompleter for Task2 {
+    fn do_task_1(&self) -> String {
+        let contents: Vec<u32> = include_str!("../input/two/input")
+            .split("\n")
+            .filter_map(|x| {
+                if x.is_empty() {
+                    None
+                } else {
+                    Some(Game::create(x))
+                }
+            })
+            .filter(|x| {
+                &x.highest_value
+                    <= &MaxValueMap {
+                        red: 12,
+                        green: 13,
+                        blue: 14,
+                    }
+            })
+            .map(|x| x.id)
+            .collect();
+        contents.iter().sum::<u32>().to_string()
+    }
+
+    fn do_task_2(&self) -> String {
+        let contents: Vec<u32> = include_str!("../input/two/input")
+            .split("\n")
+            .filter_map(|x| {
+                if x.is_empty() {
+                    None
+                } else {
+                    Some(Game::create(x))
+                }
+            })
+            .map(|x| x.highest_value.get_power())
+            .collect();
+        contents.iter().sum::<u32>().to_string()
+    }
+
+    fn get_name(&self) -> String {
+        "Two".to_owned()
+    }
 }

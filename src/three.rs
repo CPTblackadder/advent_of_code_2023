@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use crate::helpers::get_contents;
+use crate::TaskCompleter;
 
 #[derive(Debug)]
 struct Grid {
@@ -179,10 +179,34 @@ impl<'a> Iterator for GridCellNeighbours<'a> {
 }
 
 pub fn run_task() {
-    let mut grid = Grid::create(&get_contents("three".to_owned()));
+    let mut grid = Grid::create(include_str!("../input/three/input"));
 
     let (sum, gear_sum) = grid.get_sum();
 
     println!("Total number: {}", sum);
     println!("Gear sum: {}", gear_sum);
+}
+
+pub struct Task3;
+
+impl TaskCompleter for Task3 {
+    fn get_name(&self) -> String {
+        "3".to_owned()
+    }
+
+    fn do_task_1(&self) -> String {
+        let mut grid = Grid::create(include_str!("../input/three/input"));
+
+        let (sum, gear_sum) = grid.get_sum();
+
+        sum.to_string()
+    }
+
+    fn do_task_2(&self) -> String {
+        let mut grid = Grid::create(include_str!("../input/three/input"));
+
+        let (sum, gear_sum) = grid.get_sum();
+
+        gear_sum.to_string()
+    }
 }

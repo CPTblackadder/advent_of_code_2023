@@ -1,6 +1,6 @@
 use std::{cmp::max, ops::Range};
 
-use crate::helpers::get_contents;
+use crate::TaskCompleter;
 
 struct RangeMap {
     // Store special ranges
@@ -79,14 +79,25 @@ impl RangeMap {
     }
 }
 
-pub fn run_task() {
-    let contents = get_contents("five".to_owned());
+pub fn get_contents() -> (
+    Vec<u64>,
+    Vec<Range<u64>>,
+    RangeMap,
+    RangeMap,
+    RangeMap,
+    RangeMap,
+    RangeMap,
+    RangeMap,
+    RangeMap,
+) {
+    let contents = include_str!("../input/five/input");
     let lines: Vec<&str> = contents.lines().collect();
     let seeds = lines[0]
         .split(&[':', ' '])
         .map(|x| x.trim().parse::<u64>())
         .filter(|x| x.is_ok())
-        .map(|x| x.unwrap());
+        .map(|x| x.unwrap())
+        .collect();
     let seed_to_soil = RangeMap::create(&lines[3..18]);
     let soil_to_fertilizer = RangeMap::create(&lines[21..38]);
     let fertilizer_to_water = RangeMap::create(&lines[41..81]);
@@ -94,21 +105,6 @@ pub fn run_task() {
     let light_to_temperature = RangeMap::create(&lines[101..140]);
     let temperature_to_humidity = RangeMap::create(&lines[143..180]);
     let humidity_to_location = RangeMap::create(&lines[184..218]);
-
-    println!(
-        "{:?}",
-        seeds
-            .map(|x| seed_to_soil.get_value(x))
-            .map(|x| soil_to_fertilizer.get_value(x))
-            .map(|x| fertilizer_to_water.get_value(x))
-            .map(|x| water_to_light.get_value(x))
-            .map(|x| light_to_temperature.get_value(x))
-            .map(|x| temperature_to_humidity.get_value(x))
-            .map(|x| humidity_to_location.get_value(x))
-            .min()
-            .unwrap()
-    );
-
     let seed_ranges = lines[0]
         .split(&[':', ' '])
         .map(|x| x.trim().parse::<u64>())
@@ -125,26 +121,84 @@ pub fn run_task() {
                 None => (Some(y), ranges),
             },
         );
-
     assert_eq!(seed_ranges.0, None);
 
-    let best_seed: u64 = seed_ranges
-        .1
-        .into_iter()
-        .map(|x| seed_to_soil.map_range(x))
-        .flatten()
-        .map(|x| soil_to_fertilizer.map_range(x))
-        .flatten()
-        .map(|x| fertilizer_to_water.map_range(x))
-        .flatten()
-        .map(|x| water_to_light.map_range(x))
-        .flatten()
-        .map(|x| light_to_temperature.map_range(x))
-        .flatten()
-        .map(|x| temperature_to_humidity.map_range(x))
-        .flatten()
-        .map(|x| humidity_to_location.map_range(x))
-        .flatten()
-        .fold(u64::MAX, |x, y| if y.start < x { y.start } else { x });
-    println!("{:?}", best_seed);
+    (
+        seeds,
+        seed_ranges.1,
+        seed_to_soil,
+        soil_to_fertilizer,
+        fertilizer_to_water,
+        water_to_light,
+        light_to_temperature,
+        temperature_to_humidity,
+        humidity_to_location,
+    )
+}
+
+pub struct Task5;
+
+impl TaskCompleter for Task5 {
+    fn get_name(&self) -> String {
+        "5".to_owned()
+    }
+
+    fn do_task_1(&self) -> String {
+        let (
+            seeds,
+            _,
+            seed_to_soil,
+            soil_to_fertilizer,
+            fertilizer_to_water,
+            water_to_light,
+            light_to_temperature,
+            temperature_to_humidity,
+            humidity_to_location,
+        ) = get_contents();
+
+        seeds.into_iter()
+            .map(|x| seed_to_soil.get_value(x))
+            .map(|x| soil_to_fertilizer.get_value(x))
+            .map(|x| fertilizer_to_water.get_value(x))
+            .map(|x| water_to_light.get_value(x))
+            .map(|x| light_to_temperature.get_value(x))
+            .map(|x| temperature_to_humidity.get_value(x))
+            .map(|x| humidity_to_location.get_value(x))
+            .min()
+            .unwrap()
+            .to_string()
+    }
+
+    fn do_task_2(&self) -> String {
+        let (
+            _,
+            seed_ranges,
+            seed_to_soil,
+            soil_to_fertilizer,
+            fertilizer_to_water,
+            water_to_light,
+            light_to_temperature,
+            temperature_to_humidity,
+            humidity_to_location,
+        ) = get_contents();
+
+        seed_ranges
+            .into_iter()
+            .map(|x| seed_to_soil.map_range(x))
+            .flatten()
+            .map(|x| soil_to_fertilizer.map_range(x))
+            .flatten()
+            .map(|x| fertilizer_to_water.map_range(x))
+            .flatten()
+            .map(|x| water_to_light.map_range(x))
+            .flatten()
+            .map(|x| light_to_temperature.map_range(x))
+            .flatten()
+            .map(|x| temperature_to_humidity.map_range(x))
+            .flatten()
+            .map(|x| humidity_to_location.map_range(x))
+            .flatten()
+            .fold(u64::MAX, |x, y| if y.start < x { y.start } else { x })
+            .to_string()
+    }
 }
