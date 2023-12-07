@@ -4,7 +4,7 @@ use crate::TaskCompleter;
 
 pub struct Task7;
 
-#[derive(PartialEq, PartialOrd, Eq, Ord)]
+#[derive(PartialEq, PartialOrd, Eq, Ord, Debug)]
 pub enum HandType {
     HighCard,
     OnePair,
@@ -52,27 +52,34 @@ impl HandType {
             return HandType::FiveOfAKind;
         } else if count.contains(&(4 - joker_count)) {
             return HandType::FourOfAKind;
-        } else if count.contains(&(3 - joker_count)) || count.contains(&3) {
-            if count.contains(&2) {
-                return HandType::FullHouse;
-            } else {
-                return HandType::ThreeOfAKind;
-            }
         }
-        // here can have at most 1  joker
-        assert!(joker_count <= 1);
-        if joker_count == 1 {
+
+        // here can have at most 2 joker, as 3 or more will make four of a kind
+        assert!(joker_count <= 2);
+        if joker_count == 2 {
+            // Can't have any counts of two as that would have returned four of a kind
+            HandType::ThreeOfAKind
+        } else if joker_count == 1 {
             match count.iter().filter(|x| x == &&2).count() {
                 0 => HandType::OnePair,
-                1 => HandType::TwoPair,
+                1 => HandType::ThreeOfAKind,
+                2 => HandType::FullHouse,
                 _ => panic!("Can't have more than two pairs from 5 cards"),
             }
         } else {
-            match count.iter().filter(|x| x == &&2).count() {
-                0 => HandType::HighCard,
-                1 => HandType::OnePair,
-                2 => HandType::TwoPair,
-                _ => panic!("Can't have more than two pairs from 5 cards"),
+            if count.contains(&3) {
+                if count.contains(&2) {
+                    HandType::FullHouse
+                } else {
+                    HandType::ThreeOfAKind
+                }
+            } else {
+                match count.iter().filter(|x| x == &&2).count() {
+                    0 => HandType::HighCard,
+                    1 => HandType::OnePair,
+                    2 => HandType::TwoPair,
+                    _ => panic!("Can't have more than two pairs from 5 cards"),
+                }
             }
         }
     }
@@ -245,5 +252,40 @@ impl TaskCompleter for Task7 {
             sum += (i + 1) * c[i].bid as usize;
         }
         sum.to_string()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::seven::{Hand2, HandType};
+
+    #[test]
+    fn new_2_tests() {
+        assert_eq!(HandType::FiveOfAKind, Hand2::new("AAAAA 0").hand_type);
+        assert_eq!(HandType::FiveOfAKind, Hand2::new("JAAAA 0").hand_type);
+        assert_eq!(HandType::FiveOfAKind, Hand2::new("JJAAA 0").hand_type);
+        assert_eq!(HandType::FiveOfAKind, Hand2::new("JJJAA 0").hand_type);
+        assert_eq!(HandType::FiveOfAKind, Hand2::new("JJJJA 0").hand_type);
+        assert_eq!(HandType::FiveOfAKind, Hand2::new("JJJJJ 0").hand_type);
+
+        assert_eq!(HandType::FullHouse, Hand2::new("AAJ22 0").hand_type);
+        assert_eq!(HandType::FourOfAKind, Hand2::new("AJJ22 0").hand_type);
+        assert_eq!(HandType::FiveOfAKind, Hand2::new("JJJ22 0").hand_type);
+        assert_eq!(HandType::OnePair, Hand2::new("J2345 0").hand_type);
+        assert_eq!(HandType::ThreeOfAKind, Hand2::new("J2245 0").hand_type);
+    }
+
+    #[test]
+    fn run_2_on_example() {
+        let mut c: Vec<Hand2> = include_str!("../input/seven/example")
+            .lines()
+            .map(|x| Hand2::new(x))
+            .collect();
+        c.sort();
+        let mut sum = 0;
+        for i in 0..c.len() {
+            sum += (i + 1) * c[i].bid as usize;
+        }
+        assert_eq!(sum, 5905);
     }
 }
