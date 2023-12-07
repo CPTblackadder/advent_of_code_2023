@@ -57,7 +57,6 @@ impl Grid {
             }
             if number != 0 {
                 numbers.push(number);
-                number = 0;
             }
         }
         Grid {
@@ -176,15 +175,6 @@ impl<'a> Iterator for GridCellNeighbours<'a> {
         }
         Some(self.grid.get_index(height as usize, width as usize))
     }
-}
-
-pub fn run_task() {
-    let mut grid = Grid::create(include_str!("../input/three/input"));
-
-    let (sum, gear_sum) = grid.get_sum();
-
-    println!("Total number: {}", sum);
-    println!("Gear sum: {}", gear_sum);
 }
 
 pub struct Task3;
