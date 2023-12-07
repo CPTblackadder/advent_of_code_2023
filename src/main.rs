@@ -32,6 +32,7 @@ const NUMBER_OF_RUNS: i32 = 10;
 fn main() {
     let mut bool_task_1 = false;
     let mut bool_task_2 = false;
+    let mut omit_results = false;
     let filtered_tasks: Vec<i32> = std::env::args()
         .filter_map(|arg| {
             if arg == "--one" {
@@ -39,6 +40,9 @@ fn main() {
             }
             if arg == "--two" {
                 bool_task_2 = true;
+            }
+            if arg == "--omit_results" {
+                omit_results = true;
             }
             arg.parse::<i32>().ok()
         })
@@ -99,9 +103,17 @@ fn main() {
             };
             let result = [
                 task.get_name(),
-                task_1_result,
+                if !omit_results {
+                    task_1_result
+                } else {
+                    "".to_owned()
+                },
                 task_1_duration,
-                task_2_result,
+                if !omit_results {
+                    task_2_result
+                } else {
+                    "".to_owned()
+                },
                 task_2_duration,
             ];
             for i in 0..5 {
