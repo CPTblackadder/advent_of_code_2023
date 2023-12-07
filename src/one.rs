@@ -6,7 +6,7 @@ pub struct Task1;
 
 impl TaskCompleter for Task1 {
     fn do_task_1(&self) -> String {
-        let c: u32 = include_str!("../../input/one/input")
+        let c: u32 = include_str!("../input/one/input")
             .lines()
             .map(|line| {
                 let mut iter = line.chars().filter(|x| x.is_ascii_digit());
@@ -29,7 +29,7 @@ impl TaskCompleter for Task1 {
     }
 
     fn do_task_2(&self) -> String {
-        let c: i32 = include_str!("../../input/one/input")
+        let c: i32 = include_str!("../input/one/input")
             .to_lowercase()
             .lines()
             .map(|line| {
