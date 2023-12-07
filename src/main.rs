@@ -1,7 +1,5 @@
 use std::{
-    fmt::Display,
     iter::{once, zip},
-    sync::Mutex,
     time::{Duration, Instant},
 };
 

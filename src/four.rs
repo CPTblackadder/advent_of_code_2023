@@ -43,7 +43,7 @@ impl TaskCompleter for Task4 {
         let contents = include_str!("../input/four/input");
         let mut task_1_sum = 0;
         for line in contents.lines() {
-            let card_number = &line[5..8].trim().parse::<u32>().unwrap() - 1;
+            let _card_number = &line[5..8].trim().parse::<u32>().unwrap() - 1;
             let winning_numbers = parse_numbers(&line[9..40]);
             let my_numbers = parse_numbers(&line[41..]);
             let winning_matches = winning_numbers.intersection(&my_numbers).count() as u32;

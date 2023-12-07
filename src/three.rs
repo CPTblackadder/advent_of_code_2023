@@ -197,7 +197,7 @@ impl TaskCompleter for Task3 {
     fn do_task_1(&self) -> String {
         let mut grid = Grid::create(include_str!("../input/three/input"));
 
-        let (sum, gear_sum) = grid.get_sum();
+        let (sum, _gear_sum) = grid.get_sum();
 
         sum.to_string()
     }
@@ -205,7 +205,7 @@ impl TaskCompleter for Task3 {
     fn do_task_2(&self) -> String {
         let mut grid = Grid::create(include_str!("../input/three/input"));
 
-        let (sum, gear_sum) = grid.get_sum();
+        let (_sum, gear_sum) = grid.get_sum();
 
         gear_sum.to_string()
     }
