@@ -3,6 +3,7 @@ use std::{
     time::{Duration, Instant},
 };
 
+use day_08::Task8;
 use five::Task5;
 use four::Task4;
 use seven::Task7;
@@ -11,6 +12,7 @@ use three::Task3;
 
 use crate::{one::Task1, two::Task2};
 
+mod day_08;
 mod five;
 mod four;
 mod one;
@@ -28,6 +30,9 @@ pub trait TaskCompleter {
 const NUMBER_OF_RUNS: i32 = 10;
 
 fn main() {
+    let tasks: Vec<&dyn TaskCompleter> = vec![
+        &Task1, &Task2, &Task3, &Task4, &Task5, &Task6, &Task7, &Task8,
+    ];
     let mut bool_task_1 = false;
     let mut bool_task_2 = false;
     let mut omit_results = false;
@@ -45,8 +50,6 @@ fn main() {
             arg.parse::<i32>().ok()
         })
         .collect();
-    let tasks: Vec<&dyn TaskCompleter> =
-        vec![&Task1, &Task2, &Task3, &Task4, &Task5, &Task6, &Task7];
 
     let mut col_widths = [4, 13, 19, 13, 19];
 
