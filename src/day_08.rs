@@ -108,12 +108,12 @@ fn do_task_2_maybe_smarter() -> String {
         .filter_map(|(k, _)| if k.ends_with("A") { Some(*k) } else { None })
         .collect();
 
-    let first_cycle: Vec<(&str, &str, usize)> = dbg!(spaces)
+    let first_cycle: Vec<(&str, &str, usize)> = spaces
         .iter()
         .map(|x| {
             let mut count = 0;
             let mut space = *x;
-            let starting_value = x.clone();
+            let starting_value = x;
             while !space.ends_with("Z") {
                 let dir = instructions[count % instructions.len()];
                 space = match dir {
@@ -123,11 +123,11 @@ fn do_task_2_maybe_smarter() -> String {
                 };
                 count += 1;
             }
-            (starting_value, *x, count)
+            (*starting_value, *x, count)
         })
         .collect();
 
-    let mut all_subsequent_cycles: Vec<(&str, usize, usize, usize)> = dbg!(first_cycle)
+    let all_subsequent_cycles: Vec<(&str, usize, usize, usize)> = first_cycle
         .iter()
         .map(|(x, starting_value, initial_cycle_count)| {
             let mut count = 0;
