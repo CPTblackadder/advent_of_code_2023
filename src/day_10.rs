@@ -195,7 +195,7 @@ impl Grid {
             let mut v = vec![];
             let mut pos = direction.next(self.animal_position);
             let mut dir = direction;
-            println!("Going {:?}", dir);
+            // println!("Going {:?}", dir);
             while pos != self.animal_position {
                 v.push(pos);
                 if let Some(tile) = self.index_checked(pos.0, pos.1) {
@@ -366,7 +366,6 @@ impl TaskCompleter for Task10 {
             .filter(|x| in_bounds(**x, grid.grid[0].len() as i64, grid.grid.len() as i64))
         {
             if flood_fill_left[pos.1 as usize][pos.0 as usize] == FloodFillRes::Outside {
-                println!("Touches outside at {:?}", pos);
                 use_left_side = false;
                 break;
             } else if flood_fill_left[pos.1 as usize][pos.0 as usize] == FloodFillRes::NotFilled {
@@ -374,16 +373,6 @@ impl TaskCompleter for Task10 {
             }
         }
         if use_left_side {
-            println!("{}", print_grid(&flood_fill_left, FloodFillRes::Inside));
-            println!(
-                "{}",
-                flood_fill_left
-                    .iter()
-                    .flatten()
-                    .filter(|x| **x == FloodFillRes::NotFilled)
-                    .count()
-                    .to_string()
-            );
             flood_fill_left
                 .iter()
                 .flatten()
@@ -404,16 +393,6 @@ impl TaskCompleter for Task10 {
                     do_flood_fill(&mut flood_fill_right, *pos, FloodFillRes::Inside);
                 }
             }
-            println!("{}", print_grid(&flood_fill_right, FloodFillRes::NotFilled));
-            println!(
-                "{}",
-                flood_fill_right
-                    .iter()
-                    .flatten()
-                    .filter(|x| **x == FloodFillRes::NotFilled)
-                    .count()
-                    .to_string()
-            );
             flood_fill_right
                 .iter()
                 .flatten()
