@@ -237,25 +237,18 @@ fn do_flood_fill(grid: &mut Vec<Vec<FloodFillRes>>, centre: (i64, i64), to: Floo
         (-1, 0),
         (-1, -1),
     ];
-    grid[centre.1 as usize][centre.0 as usize] = to;
+    let mut queue = vec![centre];
 
-    loop {
-        let mut set_values = 0;
-        for i in 0..grid[0].len() as i64 {
-            for j in 0..grid.len() as i64 {
-                if grid[j as usize][i as usize] == FloodFillRes::NotFilled
-                    && offsets.iter().any(|(x, y)| {
-                        in_bounds((x + i, y + j), grid[0].len() as i64, grid.len() as i64)
-                            && grid[(y + j) as usize][(x + i) as usize] == to
-                    })
-                {
-                    grid[j as usize][i as usize] = to;
-                    set_values += 1;
-                }
-            }
-        }
-        if set_values == 0 {
-            break;
+    while let Some((i, j)) = queue.pop() {
+        if grid[j as usize][i as usize] == FloodFillRes::NotFilled {
+            grid[j as usize][i as usize] = to;
+            queue.append(
+                &mut offsets
+                    .iter()
+                    .map(|(x, y)| (x + i, y + j))
+                    .filter(|(x, y)| in_bounds((*x, *y), grid[0].len() as i64, grid.len() as i64))
+                    .collect::<Vec<(i64, i64)>>(),
+            );
         }
     }
 }
