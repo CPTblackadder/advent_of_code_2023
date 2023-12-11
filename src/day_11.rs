@@ -40,17 +40,16 @@ impl TaskCompleter for Task11 {
                 )
             })
             .collect();
-        let mut sum = 0;
 
-        for i in 0..galaxies.len() {
-            for j in (i + 1)..galaxies.len() {
-                let (x1, y1) = galaxies[i];
-                let (x2, y2) = galaxies[j];
-                sum += x1.abs_diff(x2) + y1.abs_diff(y2)
-            }
-        }
-
-        sum.to_string()
+        zip(0.., &galaxies)
+            .map(|(i, (x1, y1))| {
+                galaxies[i + 1..]
+                    .iter()
+                    .map(|(x2, y2)| x1.abs_diff(*x2) + y1.abs_diff(*y2))
+                    .sum::<usize>()
+            })
+            .sum::<usize>()
+            .to_string()
     }
 
     fn do_task_2(&self) -> String {
@@ -62,7 +61,7 @@ impl TaskCompleter for Task11 {
         let mut empty_columns = vec![true; lines[0].len()];
         let mut galaxies = vec![];
 
-        for (j, line) in zip(0.., lines) {
+        for (j, line) in zip(0.., contents.lines()) {
             for (i, char) in zip(0.., line.chars()) {
                 match char {
                     '#' => {
@@ -85,16 +84,15 @@ impl TaskCompleter for Task11 {
                 )
             })
             .collect();
-        let mut sum = 0;
 
-        for i in 0..galaxies.len() {
-            for j in (i + 1)..galaxies.len() {
-                let (x1, y1) = galaxies[i];
-                let (x2, y2) = galaxies[j];
-                sum += x1.abs_diff(x2) + y1.abs_diff(y2)
-            }
-        }
-
-        sum.to_string()
+        zip(0.., &galaxies)
+            .map(|(i, (x1, y1))| {
+                galaxies[i + 1..]
+                    .iter()
+                    .map(|(x2, y2)| x1.abs_diff(*x2) + y1.abs_diff(*y2))
+                    .sum::<usize>()
+            })
+            .sum::<usize>()
+            .to_string()
     }
 }
