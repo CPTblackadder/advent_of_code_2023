@@ -1,6 +1,6 @@
 use crate::TaskCompleter;
 use rayon::prelude::*;
-use std::iter;
+use std::iter::{self, zip};
 
 fn verify_sequence(sequence: &Vec<char>, verify: &Vec<u32>) -> bool {
     let mut verify_sequence = None;
@@ -99,7 +99,7 @@ fn get_combinations_verify_wise_sub(
     sequence: &Vec<char>,
     verify: &Vec<u32>,
     from_index: usize,
-) -> u32 {
+) -> u64 {
     // Get verify, go through all ? and try and fit a sequence of that length
     // call this function again and again
     if verify.len() == 0 {
@@ -139,7 +139,7 @@ fn get_combinations_verify_wise_sub(
                     0
                 }
             })
-            .sum::<u32>()
+            .sum::<u64>()
     }
 }
 
@@ -206,7 +206,7 @@ fn get_combinations_verify_wise_sub_with_output(
     }
 }
 
-fn get_combinations_verify_wise(input: &str) -> u32 {
+fn get_combinations_verify_wise(input: &str) -> u64 {
     let mut s = input.split(" ");
     let fst = s.next().unwrap();
     let snd = s.next().unwrap();
@@ -222,7 +222,7 @@ fn get_combinations_verify_wise(input: &str) -> u32 {
     get_combinations_verify_wise_sub(&sequence, &verify, 1)
 }
 
-fn get_combinations_verify_wise_blown_up(input: &&str) -> u32 {
+fn get_combinations_verify_wise_blown_up(input: &&str) -> u64 {
     let mut s = input.split(" ");
     let fst = s.next().unwrap();
     let snd = s.next().unwrap();
@@ -252,18 +252,20 @@ impl TaskCompleter for Task12 {
         contents
             .lines()
             .map(get_combinations_verify_wise)
-            .sum::<u32>()
+            .sum::<u64>()
             .to_string()
     }
 
     fn do_task_2(&self) -> String {
         let contents = include_str!("../input/day_12/input");
-        contents
-            .lines()
-            .collect::<Vec<&str>>()
+        zip(0.., contents.lines())
+            .collect::<Vec<(i32, &str)>>()
             .par_iter()
-            .map(get_combinations_verify_wise_blown_up)
-            .sum::<u32>()
+            .map(|(i, x)| {
+                println!("{}", i);
+                get_combinations_verify_wise_blown_up(x)
+            })
+            .sum::<u64>()
             .to_string()
     }
 }
