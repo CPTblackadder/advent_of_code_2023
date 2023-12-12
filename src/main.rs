@@ -35,7 +35,7 @@ pub trait TaskCompleter {
     fn do_task_2(&self) -> String;
 }
 
-const NUMBER_OF_RUNS: i32 = 1;
+const NUMBER_OF_RUNS: i32 = 10;
 
 fn main() {
     let tasks: Vec<&dyn TaskCompleter> = vec![

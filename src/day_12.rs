@@ -1,6 +1,7 @@
 use crate::TaskCompleter;
 use rayon::prelude::*;
 use std::{
+    collections::HashMap,
     iter::{self, zip},
     time::{Duration, Instant},
 };
@@ -98,50 +99,52 @@ fn get_combinations_brute_force_blown_up(input: &&str) -> u32 {
     get_combi_bf(&mut sequence, &verify, first_question_mark)
 }
 
-fn get_combinations_verify_wise_sub(
+fn get_combinations_verify_wise_sub<'a>(
+    cache: &mut HashMap<(&'a [u32], usize), u64>,
     sequence: &Vec<char>,
-    verify: &[u32],
+    verify: &'a [u32],
     from_index: usize,
 ) -> u64 {
     // Get verify, go through all ? and try and fit a sequence of that length
     // call this function again and again
     if verify.len() == 0 {
         // check everything after from_index is '.' or '?'
-        if sequence[from_index..]
-            .iter()
-            .all(|x| x == &'?' || x == &'.')
-        {
+        if sequence[from_index..].iter().all(|x| x != &'#') {
             1
         } else {
             0
         }
     } else {
-        let number_of_springs = verify[0];
-        let next_hash =
-            get_next_symbol('#', from_index, sequence).unwrap_or(sequence.len() - 2) + 2;
-        (from_index..next_hash)
-            .map(|i| {
-                if sequence[i - 1] != '#'
-                    && (i + number_of_springs as usize) < sequence.len()
-                    && sequence[i..(i + number_of_springs as usize)]
-                        .iter()
-                        .all(|x| x != &'.')
-                {
-                    // Possible location
-                    match sequence[i + number_of_springs as usize] {
-                        '?' | '.' => get_combinations_verify_wise_sub(
+        let key = (verify, from_index);
+        if let Some(res) = cache.get(&key) {
+            *res
+        } else {
+            let number_of_springs = verify[0];
+            let next_hash =
+                get_next_symbol('#', from_index, sequence).unwrap_or(sequence.len() - 2) + 2;
+            let res = (from_index..next_hash)
+                .map(|i| {
+                    if sequence[i - 1] != '#'
+                        && (i + number_of_springs as usize) < sequence.len()
+                        && sequence[i..(i + number_of_springs as usize)]
+                            .iter()
+                            .all(|x| x != &'.')
+                        && sequence[i + number_of_springs as usize] != '#'
+                    {
+                        get_combinations_verify_wise_sub(
+                            cache,
                             sequence,
                             &verify[1..],
                             i + number_of_springs as usize + 1,
-                        ), // Can use this
-                        '#' => 0, // Sequence would be too long
-                        _ => panic!("Invalid character"),
+                        )
+                    } else {
+                        0
                     }
-                } else {
-                    0
-                }
-            })
-            .sum::<u64>()
+                })
+                .sum::<u64>();
+            cache.insert(key, res);
+            res
+        }
     }
 }
 
@@ -220,7 +223,8 @@ fn get_combinations_verify_wise(input: &str) -> u64 {
         .map(|c| c.parse::<u32>().unwrap())
         .collect::<Vec<u32>>();
 
-    get_combinations_verify_wise_sub(&sequence, &verify, 1)
+    let mut cache = HashMap::new();
+    get_combinations_verify_wise_sub(&mut cache, &sequence, &verify, 1)
 }
 
 fn get_combinations_verify_wise_blown_up(input: &&str) -> u64 {
@@ -238,7 +242,8 @@ fn get_combinations_verify_wise_blown_up(input: &&str) -> u64 {
         .map(|c| c.parse::<u32>().unwrap())
         .collect::<Vec<u32>>();
 
-    get_combinations_verify_wise_sub(&sequence, &verify, 1)
+    let mut cache = HashMap::new();
+    get_combinations_verify_wise_sub(&mut cache, &sequence, &verify, 1)
 }
 
 pub struct Task12;
