@@ -1,6 +1,9 @@
 use crate::TaskCompleter;
 use rayon::prelude::*;
-use std::iter::{self, zip};
+use std::{
+    iter::{self, zip},
+    time::{Duration, Instant},
+};
 
 fn verify_sequence(sequence: &Vec<char>, verify: &Vec<u32>) -> bool {
     let mut verify_sequence = None;
@@ -255,13 +258,19 @@ impl TaskCompleter for Task12 {
     }
 
     fn do_task_2(&self) -> String {
-        let contents = include_str!("../input/day_12/example");
+        let contents = include_str!("../input/day_12/input");
+        let pb = indicatif::ProgressBar::new(1000);
         zip(0.., contents.lines())
             .collect::<Vec<(i32, &str)>>()
             .par_iter()
             .map(|(i, x)| {
-                println!("{}", i);
-                get_combinations_verify_wise_blown_up(x)
+                let start: Instant = Instant::now();
+                let v = get_combinations_verify_wise_blown_up(x);
+                if start.elapsed() > Duration::from_secs(1) {
+                    println!("Line {} took {:?}", i + 1, start.elapsed());
+                }
+                pb.inc(1);
+                v
             })
             .sum::<u64>()
             .to_string()
