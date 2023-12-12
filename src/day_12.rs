@@ -97,7 +97,7 @@ fn get_combinations_brute_force_blown_up(input: &&str) -> u32 {
 
 fn get_combinations_verify_wise_sub(
     sequence: &Vec<char>,
-    verify: &Vec<u32>,
+    verify: &[u32],
     from_index: usize,
 ) -> u64 {
     // Get verify, go through all ? and try and fit a sequence of that length
@@ -114,7 +114,6 @@ fn get_combinations_verify_wise_sub(
         }
     } else {
         let number_of_springs = verify[0];
-        let verify = verify[1..].iter().map(|x| *x).collect::<Vec<u32>>();
         let next_hash =
             get_next_symbol('#', from_index, sequence).unwrap_or(sequence.len() - 2) + 2;
         (from_index..next_hash)
@@ -129,7 +128,7 @@ fn get_combinations_verify_wise_sub(
                     match sequence[i + number_of_springs as usize] {
                         '?' | '.' => get_combinations_verify_wise_sub(
                             sequence,
-                            &verify,
+                            &verify[1..],
                             i + number_of_springs as usize + 1,
                         ), // Can use this
                         '#' => 0, // Sequence would be too long
@@ -145,7 +144,7 @@ fn get_combinations_verify_wise_sub(
 
 fn get_combinations_verify_wise_sub_with_output(
     sequence: &Vec<char>,
-    verify: &Vec<u32>,
+    verify: &[u32],
     from_index: usize,
 ) -> Vec<Vec<char>> {
     // Get verify, go through all ? and try and fit a sequence of that length
@@ -165,7 +164,6 @@ fn get_combinations_verify_wise_sub_with_output(
         }
     } else {
         let number_of_springs = verify[0];
-        let verify = verify[1..].iter().map(|x| *x).collect::<Vec<u32>>();
         let next_hash =
             get_next_symbol('#', from_index, sequence).unwrap_or(sequence.len() - 2) + 2;
         (from_index..next_hash)
@@ -181,7 +179,7 @@ fn get_combinations_verify_wise_sub_with_output(
                         '?' | '.' => {
                             let s = get_combinations_verify_wise_sub_with_output(
                                 sequence,
-                                &verify,
+                                &verify[1..],
                                 i + number_of_springs as usize + 1,
                             );
                             let s = s
@@ -257,7 +255,7 @@ impl TaskCompleter for Task12 {
     }
 
     fn do_task_2(&self) -> String {
-        let contents = include_str!("../input/day_12/input");
+        let contents = include_str!("../input/day_12/example");
         zip(0.., contents.lines())
             .collect::<Vec<(i32, &str)>>()
             .par_iter()
