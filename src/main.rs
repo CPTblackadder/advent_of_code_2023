@@ -26,6 +26,7 @@ mod seven;
 mod six;
 mod three;
 mod two;
+mod day_12;
 
 pub trait TaskCompleter {
     fn get_name(&self) -> String;
