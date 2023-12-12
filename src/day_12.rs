@@ -266,7 +266,7 @@ impl TaskCompleter for Task12 {
             .map(|(i, x)| {
                 let start: Instant = Instant::now();
                 let v = get_combinations_verify_wise_blown_up(x);
-                if start.elapsed() > Duration::from_secs(1) {
+                if start.elapsed() > Duration::from_secs(20) {
                     println!("Line {} took {:?}", i + 1, start.elapsed());
                 }
                 pb.inc(1);
