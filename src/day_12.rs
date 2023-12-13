@@ -264,7 +264,7 @@ impl TaskCompleter for Task12 {
 
     fn do_task_2(&self) -> String {
         let contents = include_str!("../input/day_12/input");
-        let pb = indicatif::ProgressBar::new(1000);
+        // let pb = indicatif::ProgressBar::new(1000);
         zip(0.., contents.lines())
             .collect::<Vec<(i32, &str)>>()
             .par_iter()
@@ -274,7 +274,7 @@ impl TaskCompleter for Task12 {
                 if start.elapsed() > Duration::from_secs(20) {
                     println!("Line {} took {:?}", i + 1, start.elapsed());
                 }
-                pb.inc(1);
+                // pb.inc(1);
                 v
             })
             .sum::<u64>()
