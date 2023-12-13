@@ -254,7 +254,7 @@ impl TaskCompleter for Task12 {
     }
 
     fn do_task_1(&self) -> String {
-        let contents = include_str!("../input/day_12/input");
+        let contents: &str = include_str!("../input/day_12/input");
         contents
             .lines()
             .map(get_combinations_verify_wise)

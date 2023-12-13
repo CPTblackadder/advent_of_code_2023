@@ -8,6 +8,7 @@ use day_09::Task9;
 use day_10::Task10;
 use day_11::Task11;
 use day_12::Task12;
+use day_13::Task13;
 use five::Task5;
 use four::Task4;
 use seven::Task7;
@@ -28,6 +29,7 @@ mod seven;
 mod six;
 mod three;
 mod two;
+mod day_13;
 
 pub trait TaskCompleter {
     fn get_name(&self) -> String;
@@ -40,7 +42,7 @@ const NUMBER_OF_RUNS: i32 = 10;
 fn main() {
     let tasks: Vec<&dyn TaskCompleter> = vec![
         &Task1, &Task2, &Task3, &Task4, &Task5, &Task6, &Task7, &Task8, &Task9, &Task10, &Task11,
-        &Task12,
+        &Task12, &Task13
     ];
     let mut bool_task_1 = false;
     let mut bool_task_2 = false;
