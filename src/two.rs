@@ -1,6 +1,5 @@
 use core::panic;
 
-
 use crate::TaskCompleter;
 
 struct Game {
@@ -141,5 +140,13 @@ impl TaskCompleter for Task2 {
 
     fn get_name(&self) -> String {
         "2".to_owned()
+    }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("2162".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("72513".to_owned())
     }
 }

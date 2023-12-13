@@ -48,4 +48,12 @@ impl TaskCompleter for Task4 {
         }
         card_copies.iter().sum::<u32>().to_string()
     }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("17782".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("8477787".to_owned())
+    }
 }

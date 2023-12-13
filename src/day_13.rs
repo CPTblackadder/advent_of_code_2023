@@ -137,7 +137,6 @@ impl Grid {
                 v.push(new_g);
             }
         }
-        dbg!(v.len());
         v
     }
 }
@@ -268,7 +267,6 @@ impl TaskCompleter for Task13 {
         grids
             .iter_mut()
             .map(|x| {
-                println!("{}", x);
                 (
                     x.get_smudges(),
                     vec![get_vertical_reflections(x), get_horizontal_reflections(x)]
@@ -306,5 +304,13 @@ impl TaskCompleter for Task13 {
             })
             .sum::<usize>()
             .to_string()
+    }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("33356".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("28475".to_owned())
     }
 }

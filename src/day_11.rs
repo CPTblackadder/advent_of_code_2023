@@ -95,4 +95,12 @@ impl TaskCompleter for Task11 {
             .sum::<usize>()
             .to_string()
     }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("9177603".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("632003913611".to_owned())
+    }
 }

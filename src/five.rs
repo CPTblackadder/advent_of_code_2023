@@ -202,4 +202,12 @@ impl TaskCompleter for Task5 {
             .fold(u64::MAX, |x, y| if y.start < x { y.start } else { x })
             .to_string()
     }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("261668924".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("24261545".to_owned())
+    }
 }

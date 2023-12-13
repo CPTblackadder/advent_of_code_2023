@@ -189,6 +189,14 @@ impl TaskCompleter for Task8 {
     fn do_task_2(&self) -> String {
         do_task_2_maybe_smarter()
     }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("21409".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("21165830176709".to_owned())
+    }
 }
 
 #[cfg(test)]

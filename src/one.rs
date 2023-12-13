@@ -1,5 +1,3 @@
-
-
 use crate::TaskCompleter;
 
 pub struct Task1;
@@ -82,5 +80,13 @@ impl TaskCompleter for Task1 {
 
     fn get_name(&self) -> String {
         "1".to_owned()
+    }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("54390".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("54277".to_owned())
     }
 }

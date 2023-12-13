@@ -1,5 +1,3 @@
-
-
 use crate::TaskCompleter;
 
 pub struct Task7;
@@ -252,6 +250,14 @@ impl TaskCompleter for Task7 {
             sum += (i + 1) * c[i].bid as usize;
         }
         sum.to_string()
+    }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("251058093".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("249781879".to_owned())
     }
 }
 

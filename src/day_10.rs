@@ -394,4 +394,12 @@ impl TaskCompleter for Task10 {
                 .to_string()
         }
     }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("6754".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("567".to_owned())
+    }
 }

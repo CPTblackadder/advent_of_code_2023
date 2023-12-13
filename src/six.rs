@@ -67,4 +67,12 @@ impl TaskCompleter for Task6 {
             .count()
             .to_string()
     }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("114400".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("21039729".to_owned())
+    }
 }

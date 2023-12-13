@@ -69,4 +69,12 @@ impl TaskCompleter for Task9 {
             .sum::<i32>()
             .to_string()
     }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("1980437560".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("977".to_owned())
+    }
 }

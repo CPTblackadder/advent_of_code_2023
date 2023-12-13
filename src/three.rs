@@ -199,4 +199,12 @@ impl TaskCompleter for Task3 {
 
         gear_sum.to_string()
     }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("546312".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("87449461".to_owned())
+    }
 }

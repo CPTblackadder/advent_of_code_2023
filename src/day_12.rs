@@ -280,4 +280,12 @@ impl TaskCompleter for Task12 {
             .sum::<u64>()
             .to_string()
     }
+
+    fn task_1_result(&self) -> Option<String> {
+        Some("7939".to_owned())
+    }
+
+    fn task_2_result(&self) -> Option<String> {
+        Some("850504257483930".to_owned())
+    }
 }

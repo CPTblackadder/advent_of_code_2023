@@ -22,6 +22,7 @@ mod day_09;
 mod day_10;
 pub mod day_11;
 mod day_12;
+mod day_13;
 mod five;
 mod four;
 mod one;
@@ -29,12 +30,13 @@ mod seven;
 mod six;
 mod three;
 mod two;
-mod day_13;
 
 pub trait TaskCompleter {
     fn get_name(&self) -> String;
     fn do_task_1(&self) -> String;
     fn do_task_2(&self) -> String;
+    fn task_1_result(&self) -> Option<String>;
+    fn task_2_result(&self) -> Option<String>;
 }
 
 const NUMBER_OF_RUNS: i32 = 10;
@@ -42,7 +44,7 @@ const NUMBER_OF_RUNS: i32 = 10;
 fn main() {
     let tasks: Vec<&dyn TaskCompleter> = vec![
         &Task1, &Task2, &Task3, &Task4, &Task5, &Task6, &Task7, &Task8, &Task9, &Task10, &Task11,
-        &Task12, &Task13
+        &Task12, &Task13,
     ];
     let mut bool_task_1 = false;
     let mut bool_task_2 = false;
@@ -73,11 +75,16 @@ fn main() {
         .filter(|(index, _)| filtered_tasks.is_empty() || filtered_tasks.contains(&(index + 1)))
         .map(|(_, task)| {
             let (task_1_result, task_1_duration) = if bool_task_1 {
+                let task_1_result;
                 let mut task_1_durations = vec![];
-                let start: Instant = Instant::now();
-                let task_1_result = task.do_task_1();
-                task_1_durations.push(start.elapsed());
-                for _ in 0..NUMBER_OF_RUNS - 1 {
+                if let Some(x) = task.task_1_result() {
+                    task_1_result = x;
+                } else {
+                    let start: Instant = Instant::now();
+                    task_1_result = task.do_task_1();
+                    task_1_durations.push(start.elapsed());
+                }
+                for _ in 0..NUMBER_OF_RUNS {
                     let start: Instant = Instant::now();
                     assert_eq!(task_1_result, task.do_task_1());
                     task_1_durations.push(start.elapsed());
@@ -93,10 +100,16 @@ fn main() {
                 ("".to_owned(), "".to_owned())
             };
             let (task_2_result, task_2_duration) = if bool_task_2 {
+                let task_2_result;
                 let mut task_2_durations = vec![];
-                let start: Instant = Instant::now();
-                let task_2_result = task.do_task_2();
-                task_2_durations.push(start.elapsed());
+                if let Some(x) = task.task_2_result() {
+                    task_2_result = x;
+                } else {
+                    let start: Instant = Instant::now();
+                    task_2_result = task.do_task_2();
+                    task_2_durations.push(start.elapsed());
+                }
+
                 for _ in 0..NUMBER_OF_RUNS - 1 {
                     let start: Instant = Instant::now();
                     assert_eq!(task_2_result, task.do_task_2());
