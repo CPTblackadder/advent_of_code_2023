@@ -1,11 +1,13 @@
 use std::{
-    collections::HashMap,
+    collections::{hash_map::DefaultHasher, HashMap},
     fmt::Display,
+    hash::{Hash, Hasher},
     iter::zip,
     ops::{Index, IndexMut},
 };
 
 use indicatif::ProgressBar;
+use rayon::iter::{IntoParallelRefIterator, IntoParallelRefMutIterator, ParallelIterator};
 
 use crate::TaskCompleter;
 
@@ -97,23 +99,29 @@ impl Grid {
     fn move_direction(&mut self, direction: Direction) {
         match direction {
             Direction::North => {
-                for i in 1..self.height() {
-                    for j in 0..self.width() {
-                        // If there is a moveable tile move it up as high as possible
-                        if self[(j, i)] == Tile::Moveable {
-                            let mut move_to = i;
-                            while move_to > 0 && self[(j, move_to - 1)] == Tile::Empty {
-                                move_to -= 1;
-                            }
+                let mut number_of_movable = 0;
 
-                            if self[(j, move_to)] == Tile::Empty {
-                                let tile = &mut self[(j, i)];
-                                *tile = Tile::Empty;
-                                let tile_to_move_to = &mut self[(j, move_to)];
-                                *tile_to_move_to = Tile::Moveable;
+                for j in 0..self.width() {
+                    for i in (0..self.height()).rev() {
+                        // Count number of movable objects before a #
+                        match self[(j, i)] {
+                            Tile::Moveable => {
+                                number_of_movable += 1;
+                                self[(j, i)] = Tile::Empty;
                             }
+                            Tile::Solid => {
+                                for k in i + 1..i + 1 + number_of_movable {
+                                    self[(j, k)] = Tile::Moveable;
+                                }
+                                number_of_movable = 0;
+                            }
+                            Tile::Empty => (),
                         }
                     }
+                    for k in 0..number_of_movable {
+                        self[(j, k)] = Tile::Moveable;
+                    }
+                    number_of_movable = 0;
                 }
             }
             Direction::South => {
@@ -139,46 +147,54 @@ impl Grid {
                 }
             }
             Direction::West => {
-                for j in 1..self.width() {
-                    for i in 0..self.height() {
-                        // If there is a moveable tile move it up as high as possible
-                        if self[(j, i)] == Tile::Moveable {
-                            let mut move_to = j;
-                            while move_to > 0 && self[(move_to - 1, i)] == Tile::Empty {
-                                move_to -= 1;
-                            }
+                let w = self.width();
+                self.g
+                    .par_iter_mut()
+                    .map(|x| {
+                        for i in 1..w {
+                            // If there is a moveable tile move it up as high as possible
+                            if x[i] == Tile::Moveable {
+                                let mut move_to = i;
+                                while move_to > 0 && x[move_to - 1] == Tile::Empty {
+                                    move_to -= 1;
+                                }
 
-                            if self[(j, move_to)] == Tile::Empty {
-                                let tile = &mut self[(j, i)];
-                                *tile = Tile::Empty;
-                                let tile_to_move_to = &mut self[(move_to, i)];
-                                *tile_to_move_to = Tile::Moveable;
+                                if x[move_to] == Tile::Empty {
+                                    let tile = &mut x[i];
+                                    *tile = Tile::Empty;
+                                    let tile_to_move_to = &mut x[move_to];
+                                    *tile_to_move_to = Tile::Moveable;
+                                }
                             }
                         }
-                    }
-                }
+                        0
+                    })
+                    .sum::<usize>();
             }
             Direction::East => {
-                for j in (0..self.width() - 1).rev() {
-                    for i in 0..self.height() {
-                        // If there is a moveable tile move it up as high as possible
-                        if self[(j, i)] == Tile::Moveable {
-                            let mut move_to = j;
-                            while move_to < self.width() - 1
-                                && self[(move_to + 1, i)] == Tile::Empty
-                            {
-                                move_to += 1;
-                            }
+                let w = self.width();
+                self.g
+                    .par_iter_mut()
+                    .map(|x| {
+                        for i in (0..w - 1).rev() {
+                            // If there is a moveable tile move it up as high as possible
+                            if x[i] == Tile::Moveable {
+                                let mut move_to = i;
+                                while move_to < w - 1 && x[move_to + 1] == Tile::Empty {
+                                    move_to += 1;
+                                }
 
-                            if self[(j, move_to)] == Tile::Empty {
-                                let tile = &mut self[(j, i)];
-                                *tile = Tile::Empty;
-                                let tile_to_move_to = &mut self[(move_to, i)];
-                                *tile_to_move_to = Tile::Moveable;
+                                if x[move_to] == Tile::Empty {
+                                    let tile = &mut x[i];
+                                    *tile = Tile::Empty;
+                                    let tile_to_move_to = &mut x[move_to];
+                                    *tile_to_move_to = Tile::Moveable;
+                                }
                             }
                         }
-                    }
-                }
+                        0
+                    })
+                    .sum::<usize>();
             }
         }
     }
@@ -206,13 +222,30 @@ impl TaskCompleter for Task14 {
     }
 
     fn do_task_2(&self) -> String {
-        let contents: &str = include_str!("../input/day_14/example");
+        let contents: &str = include_str!("../input/day_14/input");
         let mut grid = Grid::new(contents);
-        let p = ProgressBar::new(1000);
-        for i in 0..1000000000 {
-            if i % 1000000 == 0 {
-                p.inc(1);
+        const TOTAL_ITERS: u64 = 1000000000;
+        let mut seen_before = HashMap::<u64, u64>::new();
+        let mut start_of_loop = 0;
+        let mut length_of_loop = 0;
+        for i in 0..TOTAL_ITERS {
+            let mut s = DefaultHasher::new();
+            grid.hash(&mut s);
+            let hash = s.finish();
+            if let Some(index) = seen_before.get(&hash) {
+                start_of_loop = *index;
+                length_of_loop = i - index;
+                break;
+            } else {
+                seen_before.insert(hash, i);
             }
+            grid.move_direction(Direction::North);
+            grid.move_direction(Direction::West);
+            grid.move_direction(Direction::South);
+            grid.move_direction(Direction::East);
+        }
+        let position = (TOTAL_ITERS - start_of_loop) % length_of_loop;
+        for _ in 0..position {
             grid.move_direction(Direction::North);
             grid.move_direction(Direction::West);
             grid.move_direction(Direction::South);
