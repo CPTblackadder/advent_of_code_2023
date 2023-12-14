@@ -1,13 +1,11 @@
 use std::{
-    collections::{hash_map::DefaultHasher, HashMap},
+    collections::HashMap,
     fmt::Display,
-    hash::{Hash, Hasher},
     iter::zip,
     ops::{Index, IndexMut},
 };
 
-use indicatif::ProgressBar;
-use rayon::iter::{IntoParallelRefIterator, IntoParallelRefMutIterator, ParallelIterator};
+use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
 
 use crate::TaskCompleter;
 
@@ -225,19 +223,16 @@ impl TaskCompleter for Task14 {
         let contents: &str = include_str!("../input/day_14/input");
         let mut grid = Grid::new(contents);
         const TOTAL_ITERS: u64 = 1000000000;
-        let mut seen_before = HashMap::<u64, u64>::new();
+        let mut seen_before = HashMap::<Grid, u64>::new();
         let mut start_of_loop = 0;
         let mut length_of_loop = 0;
         for i in 0..TOTAL_ITERS {
-            let mut s = DefaultHasher::new();
-            grid.hash(&mut s);
-            let hash = s.finish();
-            if let Some(index) = seen_before.get(&hash) {
+            if let Some(index) = seen_before.get(&grid) {
                 start_of_loop = *index;
                 length_of_loop = i - index;
                 break;
             } else {
-                seen_before.insert(hash, i);
+                seen_before.insert(grid.clone(), i);
             }
             grid.move_direction(Direction::North);
             grid.move_direction(Direction::West);
@@ -259,6 +254,6 @@ impl TaskCompleter for Task14 {
     }
 
     fn task_2_result(&self) -> Option<String> {
-        None
+        Some("102657".to_owned())
     }
 }
