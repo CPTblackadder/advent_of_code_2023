@@ -197,7 +197,7 @@ impl TaskCompleter for Task8 {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::{HashMap};
+    use std::collections::HashMap;
 
     use crate::day_08::str_to_index;
 
