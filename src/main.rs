@@ -4,6 +4,7 @@ use std::{
     time::{Duration, Instant},
 };
 
+
 use day_08::Task8;
 use day_09::Task9;
 use day_10::Task10;
@@ -19,6 +20,8 @@ use six::Task6;
 use three::Task3;
 
 use crate::{one::Task1, two::Task2};
+
+#[allow(dead_code)]
 
 mod day_08;
 mod day_09;
