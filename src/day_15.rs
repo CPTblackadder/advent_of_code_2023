@@ -70,9 +70,8 @@ impl TaskCompleter for Task15 {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::{HashMap, HashSet};
 
-    use crate::{day_08::str_to_index, day_15::hash};
+    use crate::day_15::hash;
 
     #[test]
     fn hash_test() {
