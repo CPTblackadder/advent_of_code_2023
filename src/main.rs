@@ -32,7 +32,7 @@ mod day_07;
 mod day_08;
 mod day_09;
 mod day_10;
-pub mod day_11;
+mod day_11;
 mod day_12;
 mod day_13;
 mod day_14;
