@@ -262,17 +262,18 @@ impl TaskCompleter for Task13 {
 
         grids
             .iter_mut()
-            .map(|x| {
+            .map(|grid| {
                 (
-                    x.get_smudges(),
-                    vec![get_vertical_reflections(x), get_horizontal_reflections(x)]
+                    grid.get_smudges(),
+                    // Get the original reflective line
+                    vec![get_vertical_reflections(grid), get_horizontal_reflections(grid)]
                         .into_iter()
                         .flatten()
                         .collect::<Vec<ReflectiveLine>>()[0],
                 )
             })
-            .map(|(x, v)| {
-                let g = x
+            .map(|(grids, v)| {
+                let all_reflective_lines_for_grid = grids
                     .iter()
                     .map(|y| {
                         get_vertical_reflections(y)
@@ -285,7 +286,8 @@ impl TaskCompleter for Task13 {
                     .map(|x| x.get_final_value())
                     .collect::<Vec<usize>>();
                 // println!("The grid is {}", x[0]);
-                g.into_iter()
+                // Make sure all the reflective lines are the same
+                all_reflective_lines_for_grid.into_iter()
                     .fold(None, |x, y| match x {
                         Some(t) => {
                             if t == y {
