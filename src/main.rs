@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+// #![allow(dead_code)]
 
 use std::{
     any::type_name,
@@ -6,6 +6,11 @@ use std::{
     time::{Duration, Instant},
 };
 
+use day_03::Task3;
+use day_04::Task4;
+use day_05::Task5;
+use day_06::Task6;
+use day_07::Task7;
 use day_08::Task8;
 use day_09::Task9;
 use day_10::Task10;
@@ -14,14 +19,16 @@ use day_12::Task12;
 use day_13::Task13;
 use day_14::Task14;
 use day_15::Task15;
-use five::Task5;
-use four::Task4;
-use seven::Task7;
-use six::Task6;
-use three::Task3;
 
-use crate::{one::Task1, two::Task2};
+use crate::{day_01::Task1, day_02::Task2};
 
+mod day_01;
+mod day_02;
+mod day_03;
+mod day_04;
+mod day_05;
+mod day_06;
+mod day_07;
 mod day_08;
 mod day_09;
 mod day_10;
@@ -30,13 +37,6 @@ mod day_12;
 mod day_13;
 mod day_14;
 mod day_15;
-mod five;
-mod four;
-mod one;
-mod seven;
-mod six;
-mod three;
-mod two;
 
 pub trait TaskCompleter {
     fn get_name_auto(&self) -> String {

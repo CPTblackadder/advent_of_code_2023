@@ -259,7 +259,7 @@ impl TaskCompleter for Task7 {
 
 #[cfg(test)]
 mod tests {
-    use crate::seven::{Hand2, HandType};
+    use crate::day_07::{Hand2, HandType};
 
     #[test]
     fn new_2_tests() {
