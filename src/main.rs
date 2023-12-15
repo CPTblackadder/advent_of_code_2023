@@ -1,4 +1,5 @@
 use std::{
+    any::type_name,
     iter::{once, zip},
     time::{Duration, Instant},
 };
@@ -36,7 +37,9 @@ mod three;
 mod two;
 
 pub trait TaskCompleter {
-    fn get_name(&self) -> String;
+    fn get_name_auto(&self) -> String {
+        type_name::<Self>().split("::").last().unwrap()[4..].to_string()
+    }
     fn do_task_1(&self) -> String;
     fn do_task_2(&self) -> String;
     fn task_1_result(&self) -> Option<String>;
@@ -137,7 +140,7 @@ fn main() {
                 ("".to_owned(), "".to_owned())
             };
             let result = [
-                task.get_name(),
+                task.get_name_auto(),
                 if !omit_results {
                     task_1_result
                 } else {

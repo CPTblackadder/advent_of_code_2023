@@ -15,10 +15,6 @@ fn parse_numbers(numbers: &str) -> HashSet<u32> {
 pub struct Task4;
 
 impl TaskCompleter for Task4 {
-    fn get_name(&self) -> String {
-        "4".to_owned()
-    }
-
     fn do_task_1(&self) -> String {
         let contents = include_str!("../input/four/input");
         let mut task_1_sum = 0;

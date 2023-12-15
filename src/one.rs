@@ -78,10 +78,6 @@ impl TaskCompleter for Task1 {
         c.to_string()
     }
 
-    fn get_name(&self) -> String {
-        "1".to_owned()
-    }
-
     fn task_1_result(&self) -> Option<String> {
         Some("54390".to_owned())
     }

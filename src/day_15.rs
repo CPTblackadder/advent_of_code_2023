@@ -17,8 +17,8 @@ fn handle_str<'a>(v: &mut [Vec<(&'a str, u64)>; 256], x: &'a str) {
     } else {
         let mut split = x.split("=");
         let chars = split.next().unwrap();
-        let focul_length = split.next().unwrap().parse::<u64>().unwrap();
         let box_number = hash(chars);
+        let focul_length = split.next().unwrap().parse::<u64>().unwrap();
         if let Some(index) = v[box_number as usize].iter().position(|(x, _)| x == &chars) {
             v[box_number as usize][index] = (chars, focul_length);
         } else {
@@ -30,10 +30,6 @@ fn handle_str<'a>(v: &mut [Vec<(&'a str, u64)>; 256], x: &'a str) {
 pub struct Task15;
 
 impl TaskCompleter for Task15 {
-    fn get_name(&self) -> String {
-        "15".to_owned()
-    }
-
     fn do_task_1(&self) -> String {
         let contents: &str = include_str!("../input/day_15/input");
         contents.split(",").map(hash).sum::<u64>().to_string()

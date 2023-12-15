@@ -20,9 +20,6 @@ where
 }
 
 impl TaskCompleter for Task9 {
-    fn get_name(&self) -> String {
-        "9".to_owned()
-    }
 
     fn do_task_1(&self) -> String {
         let contents = include_str!("../input/day_09/input");

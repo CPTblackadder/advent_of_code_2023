@@ -208,10 +208,6 @@ impl Grid {
 pub struct Task14;
 
 impl TaskCompleter for Task14 {
-    fn get_name(&self) -> String {
-        "14".to_owned()
-    }
-
     fn do_task_1(&self) -> String {
         let contents: &str = include_str!("../input/day_14/input");
         let mut grid = Grid::new(contents);

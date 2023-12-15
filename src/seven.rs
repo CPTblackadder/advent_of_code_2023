@@ -222,10 +222,6 @@ impl Hand2 {
 }
 
 impl TaskCompleter for Task7 {
-    fn get_name(&self) -> String {
-        "7".to_owned()
-    }
-
     fn do_task_1(&self) -> String {
         let mut c: Vec<Hand> = include_str!("../input/seven/input")
             .lines()

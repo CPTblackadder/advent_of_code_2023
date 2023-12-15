@@ -18,10 +18,6 @@ where
 pub struct Task6;
 
 impl TaskCompleter for Task6 {
-    fn get_name(&self) -> String {
-        "6".to_owned()
-    }
-
     fn do_task_1(&self) -> String {
         let contents = include_str!("../input/six/input");
         let mut lines = contents.lines();

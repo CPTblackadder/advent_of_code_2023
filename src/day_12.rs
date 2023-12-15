@@ -249,9 +249,6 @@ fn get_combinations_verify_wise_blown_up(input: &&str) -> u64 {
 pub struct Task12;
 
 impl TaskCompleter for Task12 {
-    fn get_name(&self) -> String {
-        "12".to_owned()
-    }
 
     fn do_task_1(&self) -> String {
         let contents: &str = include_str!("../input/day_12/input");

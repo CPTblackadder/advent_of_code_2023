@@ -158,10 +158,6 @@ fn do_task_2_maybe_smarter() -> String {
 }
 
 impl TaskCompleter for Task8 {
-    fn get_name(&self) -> String {
-        "8".to_owned()
-    }
-
     fn do_task_1(&self) -> String {
         let contents = include_str!("../input/day_08/input");
         let mut lines = contents.lines();

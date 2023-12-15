@@ -180,10 +180,6 @@ impl<'a> Iterator for GridCellNeighbours<'a> {
 pub struct Task3;
 
 impl TaskCompleter for Task3 {
-    fn get_name(&self) -> String {
-        "3".to_owned()
-    }
-
     fn do_task_1(&self) -> String {
         let mut grid = Grid::create(include_str!("../input/three/input"));
 

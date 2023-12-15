@@ -221,10 +221,6 @@ fn get_vertical_reflections(grid: &Grid) -> Vec<ReflectiveLine> {
 pub struct Task13;
 
 impl TaskCompleter for Task13 {
-    fn get_name(&self) -> String {
-        "12".to_owned()
-    }
-
     fn do_task_1(&self) -> String {
         let contents: &str = include_str!("../input/day_13/input");
         let mut grids = contents.lines().fold(vec![Grid::new()], |mut v, x| {

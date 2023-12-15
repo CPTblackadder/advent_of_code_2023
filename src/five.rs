@@ -139,10 +139,6 @@ fn get_contents() -> (
 pub struct Task5;
 
 impl TaskCompleter for Task5 {
-    fn get_name(&self) -> String {
-        "5".to_owned()
-    }
-
     fn do_task_1(&self) -> String {
         let (
             seeds,

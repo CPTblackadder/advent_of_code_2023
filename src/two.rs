@@ -137,11 +137,6 @@ impl TaskCompleter for Task2 {
             .collect();
         contents.iter().sum::<u32>().to_string()
     }
-
-    fn get_name(&self) -> String {
-        "2".to_owned()
-    }
-
     fn task_1_result(&self) -> Option<String> {
         Some("2162".to_owned())
     }
