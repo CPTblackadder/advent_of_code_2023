@@ -1,4 +1,4 @@
-use std::{collections::HashSet, iter, ops::Index, str::Chars};
+use std::{collections::HashSet, iter, ops::Index};
 
 use crate::TaskCompleter;
 
@@ -317,7 +317,7 @@ impl TaskCompleter for Task10 {
             .iter()
             .map(|x| {
                 x.iter()
-                    .map(|y| FloodFillRes::NotFilled)
+                    .map(|_y| FloodFillRes::NotFilled)
                     .collect::<Vec<FloodFillRes>>()
             })
             .collect();
