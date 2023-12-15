@@ -10,6 +10,7 @@ use day_11::Task11;
 use day_12::Task12;
 use day_13::Task13;
 use day_14::Task14;
+use day_15::Task15;
 use five::Task5;
 use four::Task4;
 use seven::Task7;
@@ -25,6 +26,7 @@ pub mod day_11;
 mod day_12;
 mod day_13;
 mod day_14;
+mod day_15;
 mod five;
 mod four;
 mod one;
@@ -46,7 +48,7 @@ const NUMBER_OF_RUNS: i32 = 10;
 fn main() {
     let tasks: Vec<&dyn TaskCompleter> = vec![
         &Task1, &Task2, &Task3, &Task4, &Task5, &Task6, &Task7, &Task8, &Task9, &Task10, &Task11,
-        &Task12, &Task13, &Task14,
+        &Task12, &Task13, &Task14, &Task15,
     ];
     let mut bool_task_1 = false;
     let mut bool_task_2 = false;
