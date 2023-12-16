@@ -19,6 +19,7 @@ use day_12::Task12;
 use day_13::Task13;
 use day_14::Task14;
 use day_15::Task15;
+use day_16::Task16;
 
 use crate::{day_01::Task1, day_02::Task2};
 
@@ -37,6 +38,7 @@ mod day_12;
 mod day_13;
 mod day_14;
 mod day_15;
+mod day_16;
 
 pub trait TaskCompleter {
     fn get_name_auto(&self) -> String {
@@ -53,7 +55,7 @@ const NUMBER_OF_RUNS: i32 = 10;
 fn main() {
     let tasks: Vec<&dyn TaskCompleter> = vec![
         &Task1, &Task2, &Task3, &Task4, &Task5, &Task6, &Task7, &Task8, &Task9, &Task10, &Task11,
-        &Task12, &Task13, &Task14, &Task15,
+        &Task12, &Task13, &Task14, &Task15, &Task16,
     ];
     let mut bool_task_1 = false;
     let mut bool_task_2 = false;
