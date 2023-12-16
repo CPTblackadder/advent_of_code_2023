@@ -1,8 +1,6 @@
 use std::{
-    collections::HashSet,
     fmt::Display,
     ops::{Index, IndexMut},
-    thread,
 };
 
 use crate::TaskCompleter;
