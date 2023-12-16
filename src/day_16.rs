@@ -3,6 +3,8 @@ use std::{
     ops::{Index, IndexMut},
 };
 
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
+
 use crate::TaskCompleter;
 
 #[derive(Default, Clone)]
@@ -237,14 +239,21 @@ impl TaskCompleter for Task16 {
         let chars = Grid::from_string(contents);
 
         (0..chars.width() as i64)
+            .into_par_iter()
             .map(|x| (Coord(x, -1), Direction::Up))
             .chain(
                 (0..chars.width() as i64)
+                    .into_par_iter()
                     .map(|x| (Coord(x, chars.height() as i64), Direction::Down)),
             )
-            .chain((0..chars.height() as i64).map(|y| (Coord(-1, y), Direction::Right)))
             .chain(
                 (0..chars.height() as i64)
+                    .into_par_iter()
+                    .map(|y| (Coord(-1, y), Direction::Right)),
+            )
+            .chain(
+                (0..chars.height() as i64)
+                    .into_par_iter()
                     .map(|y| (Coord(chars.width() as i64, y), Direction::Left)),
             )
             .map(|(c, d)| {
