@@ -165,7 +165,7 @@ fn follow_light_ray(
     let mut to_check = vec![(init_from, init_dir)];
     while let Some((from, direction)) = to_check.pop() {
         if chars.in_bounds(from) && rays[from].set(direction) {
-            return;
+            continue;
         }
         if let Some(new_coord) = from.translate(direction, chars) {
             match chars[new_coord] {
@@ -216,7 +216,7 @@ pub struct Task16;
 
 impl TaskCompleter for Task16 {
     fn do_task_1(&self) -> String {
-        let contents: &str = include_str!("../input/day_16/example");
+        let contents: &str = include_str!("../input/day_16/input");
         let chars = Grid::from_string(contents);
         let mut rays = Grid::default_with_size(chars.width(), chars.height());
 
@@ -264,6 +264,6 @@ impl TaskCompleter for Task16 {
     }
 
     fn task_2_result(&self) -> Option<String> {
-        None
+        Some("8437".to_owned())
     }
 }
