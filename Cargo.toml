@@ -8,4 +8,5 @@ edition = "2021"
 [dependencies]
 indicatif = "0.17.7"
 num = "0.4.1"
+pathfinding = "4.6.0"
 rayon = "1.8.0"

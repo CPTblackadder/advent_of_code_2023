@@ -15,7 +15,7 @@ pub enum Tile {
 }
 
 #[derive(Clone, Copy, Debug)]
-pub enum Direction {
+enum Direction {
     North,
     South,
     East,
@@ -23,7 +23,7 @@ pub enum Direction {
 }
 
 #[derive(PartialEq, Debug, Clone, Copy)]
-pub enum FloodFillRes {
+enum FloodFillRes {
     NotFilled,
     Outside,
     Inside,
@@ -120,7 +120,7 @@ impl Tile {
     }
 }
 
-pub struct Grid {
+struct Grid {
     grid: Vec<Vec<Tile>>,
     animal_position: (i64, i64),
 }
