@@ -114,6 +114,10 @@ impl Coord {
     pub(crate) fn new(arg1: i64, arg2: i64) -> Coord {
         Coord(arg1, arg2)
     }
+
+    pub(crate) fn non_diagnal_distance(&self, dest: &Coord) -> i64 {
+        (self.0.abs_diff(dest.0) + self.1.abs_diff(dest.1)) as i64
+    }
 }
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
@@ -122,4 +126,24 @@ pub enum Direction {
     Down,
     Left,
     Right,
+}
+
+impl Direction {
+    pub fn right(&self) -> Self {
+        match self {
+            Direction::Up => Direction::Right,
+            Direction::Down => Direction::Left,
+            Direction::Left => Direction::Up,
+            Direction::Right => Direction::Down,
+        }
+    }
+
+    pub fn left(&self) -> Self {
+        match self {
+            Direction::Up => Direction::Left,
+            Direction::Down => Direction::Right,
+            Direction::Left => Direction::Down,
+            Direction::Right => Direction::Up,
+        }
+    }
 }
