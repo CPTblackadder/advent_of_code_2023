@@ -1,4 +1,4 @@
-use std::{fs::File, io::Write, os::windows};
+
 
 use crate::{
     grid::{Coord, Direction, Grid},
@@ -100,7 +100,7 @@ impl TaskCompleter for Task18 {
             split.next();
             split.next();
             let final_str = split.next().unwrap();
-            let dir = match &final_str[7..8] {
+            let _dir = match &final_str[7..8] {
                 "0" => Direction::Right,
                 "1" => Direction::Down,
                 "2" => Direction::Left,
