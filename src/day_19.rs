@@ -216,13 +216,13 @@ impl XMASRange {
             .get(rule)
             .expect(&format!("Couldn't find {} in {:?}", rule, rules.keys()));
         rule.run_range(&self)
-            .iter()
+            .into_iter()
             .filter(|(_, result)| result != &InstructionResult::Reject)
             .map(|(range, result)| {
                 if let InstructionResult::Rule(r) = result {
                     range.run_rule(rules, r)
                 } else {
-                    vec![range.clone()]
+                    vec![range]
                 }
             })
             .flatten()
@@ -242,101 +242,43 @@ impl XMASRange {
         value: i64,
         value_in_lower: bool,
     ) -> (Option<XMASRange>, Option<XMASRange>) {
-        let pivot;
-        if value_in_lower {
-            pivot = value + 1;
+        let pivot = if value_in_lower { value + 1 } else { value };
+        let r = match variable {
+            Variables::X => &self.x,
+            Variables::M => &self.m,
+            Variables::A => &self.a,
+            Variables::S => &self.s,
+        };
+        if pivot < r.start {
+            (None, Some(self.clone()))
+        } else if pivot > r.end {
+            (Some(self.clone()), None)
         } else {
-            pivot = value;
+            (
+                Some(self.clone_with_value(variable, r.start..pivot)),
+                Some(self.clone_with_value(variable, pivot..r.end)),
+            )
         }
+    }
+
+    fn clone_with_value(&self, variable: Variables, pivot: Range<i64>) -> Self {
         match variable {
-            Variables::X => {
-                if pivot < self.x.start {
-                    (None, Some(self.clone()))
-                } else if pivot > self.x.end {
-                    (Some(self.clone()), None)
-                } else {
-                    (
-                        Some(XMASRange {
-                            x: self.x.start..pivot,
-                            m: self.m.clone(),
-                            a: self.a.clone(),
-                            s: self.s.clone(),
-                        }),
-                        Some(XMASRange {
-                            x: pivot..self.x.end,
-                            m: self.m.clone(),
-                            a: self.a.clone(),
-                            s: self.s.clone(),
-                        }),
-                    )
-                }
-            }
-            Variables::M => {
-                if pivot < self.m.start {
-                    (None, Some(self.clone()))
-                } else if pivot > self.m.end {
-                    (Some(self.clone()), None)
-                } else {
-                    (
-                        Some(XMASRange {
-                            m: self.m.start..pivot,
-                            x: self.x.clone(),
-                            a: self.a.clone(),
-                            s: self.s.clone(),
-                        }),
-                        Some(XMASRange {
-                            m: pivot..self.m.end,
-                            x: self.x.clone(),
-                            a: self.a.clone(),
-                            s: self.s.clone(),
-                        }),
-                    )
-                }
-            }
-            Variables::A => {
-                if pivot < self.a.start {
-                    (None, Some(self.clone()))
-                } else if pivot > self.a.end {
-                    (Some(self.clone()), None)
-                } else {
-                    (
-                        Some(XMASRange {
-                            a: self.a.start..pivot,
-                            m: self.m.clone(),
-                            x: self.x.clone(),
-                            s: self.s.clone(),
-                        }),
-                        Some(XMASRange {
-                            a: pivot..self.a.end,
-                            m: self.m.clone(),
-                            x: self.x.clone(),
-                            s: self.s.clone(),
-                        }),
-                    )
-                }
-            }
-            Variables::S => {
-                if pivot < self.s.start {
-                    (None, Some(self.clone()))
-                } else if pivot > self.s.end {
-                    (Some(self.clone()), None)
-                } else {
-                    (
-                        Some(XMASRange {
-                            s: self.s.start..pivot,
-                            m: self.m.clone(),
-                            a: self.a.clone(),
-                            x: self.x.clone(),
-                        }),
-                        Some(XMASRange {
-                            s: pivot..self.s.end,
-                            m: self.m.clone(),
-                            a: self.a.clone(),
-                            x: self.x.clone(),
-                        }),
-                    )
-                }
-            }
+            Variables::X => Self {
+                x: pivot,
+                ..self.clone()
+            },
+            Variables::M => Self {
+                m: pivot,
+                ..self.clone()
+            },
+            Variables::A => Self {
+                a: pivot,
+                ..self.clone()
+            },
+            Variables::S => Self {
+                s: pivot,
+                ..self.clone()
+            },
         }
     }
 }
