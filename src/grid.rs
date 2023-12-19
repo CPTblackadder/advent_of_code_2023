@@ -8,6 +8,29 @@ pub struct Grid<T> {
     g: Vec<Vec<T>>,
 }
 
+pub struct GridIter<'a, T> {
+    grid: &'a Grid<T>,
+    coord: Coord,
+}
+
+impl<'a, T> Iterator for GridIter<'a, T> {
+    type Item = (Coord, &'a T);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.coord.0 >= self.grid.width() as i64 {
+            self.coord = Coord::new(0, self.coord.1 + 1);
+        }
+        if self.coord.1 >= self.grid.height() as i64 {
+            None
+        } else {
+            let ret = &self.grid[self.coord];
+            self.coord = Coord::new(self.coord.0 + 1, self.coord.1);
+
+            Some((self.coord, ret))
+        }
+    }
+}
+
 impl Grid<i64> {
     pub fn from_string_i64(input: &str) -> Self {
         let v = input
@@ -68,6 +91,27 @@ impl<T: Default + Clone> Grid<T> {
     }
 }
 
+impl<T: Clone> Grid<T> {
+    pub fn init_with_size(init_value: T, width: usize, height: usize) -> Self {
+        let row_def = vec![init_value.clone(); width];
+        let g = vec![row_def; height];
+        Self { g }
+    }
+}
+
+impl<T: Clone + PartialEq> Grid<T> {
+    pub fn do_flood_fill(&mut self, centre: Coord, to: T, unfilled: T, diagnols: bool) {
+        let mut queue = vec![centre];
+
+        while let Some(coord) = queue.pop() {
+            if self.in_bounds(coord) && self[coord] == unfilled {
+                self[coord] = to.clone();
+                queue.append(&mut coord.get_neighbours(diagnols));
+            }
+        }
+    }
+}
+
 impl<T> Grid<T> {
     pub fn width(&self) -> usize {
         self.g[0].len()
@@ -82,6 +126,13 @@ impl<T> Grid<T> {
 
     pub fn grid(&self) -> &Vec<Vec<T>> {
         &self.g
+    }
+
+    pub fn into_iter<'a>(&'a self) -> GridIter<'a, T> {
+        GridIter {
+            grid: self,
+            coord: Coord::new(0, 0),
+        }
     }
 }
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
@@ -117,6 +168,28 @@ impl Coord {
 
     pub(crate) fn non_diagnal_distance(&self, dest: &Coord) -> i64 {
         (self.0.abs_diff(dest.0) + self.1.abs_diff(dest.1)) as i64
+    }
+
+    fn get_neighbours(&self, diagnols: bool) -> Vec<Coord> {
+        if diagnols {
+            vec![
+                Coord::new(self.0, self.1 + 1),
+                Coord::new(self.0, self.1 - 1),
+                Coord::new(self.0 + 1, self.1),
+                Coord::new(self.0 - 1, self.1),
+                Coord::new(self.0 + 1, self.1 + 1),
+                Coord::new(self.0 + 1, self.1 - 1),
+                Coord::new(self.0 - 1, self.1 + 1),
+                Coord::new(self.0 - 1, self.1 - 1),
+            ]
+        } else {
+            vec![
+                Coord::new(self.0, self.1 + 1),
+                Coord::new(self.0, self.1 - 1),
+                Coord::new(self.0 + 1, self.1),
+                Coord::new(self.0 - 1, self.1),
+            ]
+        }
     }
 }
 
