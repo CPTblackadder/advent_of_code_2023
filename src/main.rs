@@ -23,6 +23,11 @@ use day_16::Task16;
 use day_17::Task17;
 use day_18::Task18;
 use day_19::Task19;
+use day_20::Task20;
+use day_21::Task21;
+use day_22::Task22;
+use day_23::Task23;
+use day_24::Task24;
 
 use crate::{day_01::Task1, day_02::Task2};
 
@@ -45,6 +50,11 @@ mod day_16;
 mod day_17;
 mod day_18;
 mod day_19;
+mod day_20;
+mod day_21;
+mod day_22;
+mod day_23;
+mod day_24;
 mod grid;
 
 pub trait TaskCompleter {
@@ -62,7 +72,8 @@ const NUMBER_OF_RUNS: i32 = 10;
 fn main() {
     let tasks: Vec<&dyn TaskCompleter> = vec![
         &Task1, &Task2, &Task3, &Task4, &Task5, &Task6, &Task7, &Task8, &Task9, &Task10, &Task11,
-        &Task12, &Task13, &Task14, &Task15, &Task16, &Task17, &Task18, &Task19,
+        &Task12, &Task13, &Task14, &Task15, &Task16, &Task17, &Task18, &Task19, &Task20, &Task21,
+        &Task22, &Task23, &Task24,
     ];
     let mut bool_task_1 = false;
     let mut bool_task_2 = false;
