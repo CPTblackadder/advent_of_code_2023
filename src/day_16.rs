@@ -1,5 +1,3 @@
-
-
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 use crate::{
@@ -116,7 +114,7 @@ pub struct Task16;
 impl TaskCompleter for Task16 {
     fn do_task_1(&self) -> String {
         let contents: &str = include_str!("../input/day_16/input");
-        let chars = Grid::from_string(contents);
+        let chars = Grid::from_string(contents, true);
         let rays = follow_light_ray(
             &chars,
             Coord::new(-1, chars.height() as i64 - 1),
@@ -132,7 +130,7 @@ impl TaskCompleter for Task16 {
 
     fn do_task_2(&self) -> String {
         let contents: &str = include_str!("../input/day_16/input");
-        let chars = Grid::from_string(contents);
+        let chars = Grid::from_string(contents, true);
 
         (0..chars.width() as i64)
             .into_par_iter()
@@ -154,7 +152,11 @@ impl TaskCompleter for Task16 {
             )
             .map(|(c, d)| {
                 let rays = follow_light_ray(&chars, c, d);
-                rays.grid().iter().flatten().filter(|x| x.is_energized()).count()
+                rays.grid()
+                    .iter()
+                    .flatten()
+                    .filter(|x| x.is_energized())
+                    .count()
             })
             .max()
             .unwrap()

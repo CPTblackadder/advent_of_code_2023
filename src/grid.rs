@@ -23,10 +23,11 @@ impl<'a, T> Iterator for GridIter<'a, T> {
         if self.coord.1 >= self.grid.height() as i64 {
             None
         } else {
+            let coord = self.coord;
             let ret = &self.grid[self.coord];
             self.coord = Coord::new(self.coord.0 + 1, self.coord.1);
 
-            Some((self.coord, ret))
+            Some((coord, ret))
         }
     }
 }
@@ -47,9 +48,14 @@ impl Grid<i64> {
 }
 
 impl Grid<char> {
-    pub fn from_string(input: &str) -> Self {
-        let v = input.lines().rev().map(|x| x.chars().collect()).collect();
-        Grid { g: v }
+    pub fn from_string(input: &str, reverse: bool) -> Self {
+        let g;
+        if reverse {
+            g = input.lines().rev().map(|x| x.chars().collect()).collect();
+        } else {
+            g = input.lines().map(|x| x.chars().collect()).collect();
+        }
+        Grid { g }
     }
 }
 
@@ -133,6 +139,18 @@ impl<T> Grid<T> {
             grid: self,
             coord: Coord::new(0, 0),
         }
+    }
+
+    pub fn find_coord<F>(&self, predicate: F) -> Option<Coord>
+    where
+        F: Fn(&T) -> bool,
+    {
+        for (coord, item) in self.into_iter() {
+            if predicate(item) {
+                return Some(coord);
+            }
+        }
+        None
     }
 }
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
