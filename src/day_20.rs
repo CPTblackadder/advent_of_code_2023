@@ -3,6 +3,8 @@ use std::{
     fmt::Display,
 };
 
+use num::integer::lcm;
+
 use crate::TaskCompleter;
 
 pub struct Task20;
@@ -239,16 +241,29 @@ impl TaskCompleter for Task20 {
         }
 
         let mut pulse_queue = VecDeque::new();
-        for i in 0.. {
+        let mut qz = i64::MAX;
+        let mut cq = i64::MAX;
+        let mut jx = i64::MAX;
+        let mut tt = i64::MAX;
+
+        for i in 1.. {
             pulse_queue.push_front(("button", Pulse::Low, "broadcast"));
-            if i % 100000 == 0 {
-                println!("Done {} button presses", i);
-            }
 
             while let Some((from, pulse, to)) = pulse_queue.pop_back() {
-                if pulse == Pulse::Low && to == "rx" {
-                    return i.to_string();
+                if from == "qz" && qz == i64::MAX && pulse == Pulse::High {
+                    qz = i;
+                } else if from == "cq" && cq == i64::MAX && pulse == Pulse::High {
+                    cq = i;
+                } else if from == "jx" && jx == i64::MAX && pulse == Pulse::High {
+                    jx = i;
+                } else if from == "tt" && tt == i64::MAX && pulse == Pulse::High {
+                    tt = i;
                 }
+
+                if qz != i64::MAX && cq != i64::MAX && jx != i64::MAX && tt != i64::MAX {
+                    return lcm(qz, lcm(cq, lcm(jx, tt))).to_string();
+                }
+
                 if let Some(m) = modules.get_mut(to) {
                     m.recieve_pulse(from, pulse, &mut pulse_queue);
                 }
@@ -262,6 +277,6 @@ impl TaskCompleter for Task20 {
     }
 
     fn task_2_result(&self) -> Option<String> {
-        None
+        Some("241528477694627".to_owned())
     }
 }
