@@ -202,8 +202,6 @@ impl TaskCompleter for Task20 {
             }
             // dbg!(&modules);
         }
-        dbg!(low_pulses, high_pulses);
-
         (high_pulses * low_pulses).to_string()
     }
 
