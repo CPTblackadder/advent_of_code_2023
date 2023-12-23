@@ -147,7 +147,7 @@ fn destroy_and_fall(index: usize, mut bricks: Vec<Brick>, max_dimensions: (i64, 
     fall_bricks(&mut bricks, max_dimensions)
 }
 
-fn fall_bricks(mut bricks: &mut Vec<Brick>, max_dimensions: (i64, i64)) -> i64 {
+fn fall_bricks(bricks: &mut Vec<Brick>, max_dimensions: (i64, i64)) -> i64 {
     let mut sorted_indexes = (0..bricks.len()).into_iter().collect::<Vec<usize>>();
     sorted_indexes.sort_by(|x, y| {
         bricks[*x]

@@ -1,7 +1,7 @@
 use std::iter;
 
 use crate::{
-    grid::{Coord, Direction, Grid},
+    grid::{Direction},
     TaskCompleter,
 };
 

@@ -2,14 +2,12 @@ use crate::{
     grid::{Coord, Direction, Grid},
     TaskCompleter,
 };
-use crossbeam::deque::{Steal, Worker};
-use rayon::spawn;
+
+
 use std::{
     collections::VecDeque,
-    rc::Rc,
     sync::{
-        atomic::{self, AtomicUsize},
-        mpsc, Arc, Mutex,
+        Arc, Mutex,
     },
     thread,
 };
@@ -186,11 +184,11 @@ impl TaskCompleter for Task23 {
     fn do_task_2(&self) -> String {
         let contents: &str = include_str!("../input/day_23/input");
         let g: Grid<char> = Grid::from_string(contents, false);
-        let start_tile = (0..g.width() as i64)
+        let _start_tile = (0..g.width() as i64)
             .into_iter()
             .find(|x| g[Coord::new(*x, 0)] == '.')
             .unwrap();
-        let end_tile = (0..g.width() as i64)
+        let _end_tile = (0..g.width() as i64)
             .into_iter()
             .find(|x| g[Coord::new(*x, g.height() as i64 - 1)] == '.')
             .unwrap();
